@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Quiz</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+     <script   src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <style>    
+        #myPage .panel {
+            width: 400px; 
+            float: left;  
+            padding: 15px;
+            margin: 20px;
+            border-color: darkblue;   
+            font-family: "Times New Roman", Times serif;
+        }
+        #myPage .panel-heading {
+            background-color: lightblue;    
+            color: black;     
+            font-family: "Times New Roman", Times serif;  
+            height:auto;       
+        }     
+        #myPage .panel-body {
+            background-color: #F0F8FF;    
+            color: black;     
+            font-family: "Times New Roman", Times serif;
+        }
+        #myPage .panel-footer {
+            background-color: lightgray;    
+            color: black;     
+            font-family: "Times New Roman", Times serif; 
+        }
+        .mytext{
+            font-size: 18pt;
+            margin-left: 40px;
+            font-family: "Times New Roman", Times serif;
+            color:black;
+        }
+        .jumbotron{
+            text-align: center;
+            color: black;
+            background-color: white;
+            font-family: "Times New Roman", Times serif;
+            outline-style: double;
+            outline-width: thick;
+            padding-bottom: 10px;
+        }
+        .titles{
+            text-align:center;
+        }
+        .logo{
+            width:90%;
+        }
+        .item img{
+            width:1000px;
+            height: 500px;
+        }
+        .navbar {
+            padding-top: 10px;
+            padding-bottom: 5px;
+            border: 0;
+            border-radius: 0;
+            margin-bottom: 0;
+            font-size: 12px;
+            letter-spacing: 5px;
+        }
+        .navbar-nav  li a:hover {
+            color: lightblue !important;     
+        }
+        .btn{
+            background-color: lightblue;
+            outline-color: white;
+        }
+        h1{
+            font-size: 15px;
+
+
+        }
+    </style>
+
+    <script type="text/template" id="Template">
+        <div class="panel panel-default">
+            <div class="panel-heading"> Question: {{Question}}  {{info.Q5}} </div>
+            <div class="panel-body"> A. {{A}} </div>
+            <div class="panel-body"> B. {{B}} </div>
+            <div class="panel-body"> C. {{C}} </div>
+            <div class="panel-body"> D. {{D}} </div>      
+            <div class="panel-footer">
+                <input type="text" id="{{id}}" placeholder="Choice letter">
+            </div>
+        </div>
+    </script>
+
+    <script>
+        var data; //global variable
+
+    function getData(){         
+      $.getJSON("https://project-5e4fa.firebaseio.com/.json", function(result){
+        data = result;
+                displayQuestions(); 
+      }); 
+    }
+  
+    // DISPLAY QUESTIONS
+    function displayQuestions(){
+      var build ="";
+      var template = document.getElementById("Template").innerHTML;  
+      var Question =0; // Question number
+            var output = document.getElementById("output");
+    
+      for(var key in data.Quiz5){
+        Question++;
+        Quiz5 ={
+          "info": data[Template], 
+          "id": data[Template],
+          "Question": data[Question]
+        }
+        build += Mustache.render(template,data.Quiz5[key]);     
+      }
+      document.getElementById("quiz").innerHTML = build;              
+    }                    
+    
+    // CHECK ANSWERS AND CALCULATE SCORE
+        function checkAnswers(){
+            var score = 0;
+            var count = 0;
+            for(var key in data.Quiz5){
+                var correctAns = data.Quiz5[key].Ans;
+                var userAns = document.getElementById(key).value;               
+                count++;
+                if (userAns.toUpperCase() == correctAns){
+                    score++;
+                }
+                var grd = (score/count * 100).toFixed(0);       
+            }
+            document.getElementById("score").innerHTML = "<h1>You answered " + score + " out of " + count+" questions correctly!<br><br>Your score is <b> "+ grd + "%</b></h1>"; 
+        }
+  </script>
+</head>
+<body onload="getData()" id="myPage">
+    <div class="container">
+
+        <div class="jumbotron">
+            <h1> QUIZ 5 </h1>
+            <p>Multiple Choice Quiz</p> 
+        </div>
+                    
+        <div class="w3-top">
+  <div class="w3-bar w3-black w3-card w3-left-align w3-large">
+    <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+    <a href="index.html" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+    <a href="menu2.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">About</a>
+    <a href="menu3.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Quizzes</a>
+    <a href="menu4.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Contact</a>
+  </div>
+
+  <!-- Navbar on small screens -->
+  <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
+    <a href="#" class="w3-bar-item w3-button w3-padding-large">Home</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large">About</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large">Quizzes</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large">Contact</a>
+  </div>
+</div>
+
+        <h1>See how much you've learned by taking the quiz!</h1>
+                
+        <div id="quiz"></div>
+            <button onclick="checkAnswers()" type="button" class="btn btn-default">CHECK SCORE</button>
+        <div id="score"></div>
+
+        <div id="Next"></div>
+
+        <div id="score"></div>
+
+    </div>
+</body>
+</html>
